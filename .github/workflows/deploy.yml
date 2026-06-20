@@ -26,17 +26,31 @@ jobs:
       - name: Setup gcloud
         uses: google-github-actions/setup-gcloud@v2
 
+      - name: Verify Authentication
+        run: |
+          echo "Authenticated Accounts:"
+          gcloud auth list
+
+          echo "Current Project:"
+          gcloud config get-value project
+
+          echo "Access Token Test:"
+          gcloud auth print-access-token | head -c 20
+
       - name: Configure Docker
         run: |
-          gcloud auth configure-docker us-central1-docker.pkg.dev --quiet
+          gcloud auth configure-docker us-central1-docker.pkg.dev
 
       - name: Build Docker Image
         run: |
-          docker build -t us-central1-docker.pkg.dev/${{ secrets.PROJECT_ID }}/app-repo/demo-app:${{ github.sha }} ./app
+          docker build \
+            -t us-central1-docker.pkg.dev/${{ secrets.PROJECT_ID }}/app-repo/demo-app:${{ github.sha }} \
+            ./app
 
       - name: Push Docker Image
         run: |
-          docker push us-central1-docker.pkg.dev/${{ secrets.PROJECT_ID }}/app-repo/demo-app:${{ github.sha }}
+          docker push \
+            us-central1-docker.pkg.dev/${{ secrets.PROJECT_ID }}/app-repo/demo-app:${{ github.sha }}
 
       - name: Deploy to Cloud Run
         run: |
@@ -45,4 +59,3 @@ jobs:
             --region us-central1 \
             --platform managed \
             --allow-unauthenticated
-
