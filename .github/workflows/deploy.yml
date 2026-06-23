@@ -4,6 +4,9 @@ on:
   push:
     branches:
       - main
+      - dev
+      - qa
+      - prod
 
 permissions:
   contents: read
@@ -59,3 +62,5 @@ jobs:
             --region us-central1 \
             --platform managed \
             --allow-unauthenticated
+
+
